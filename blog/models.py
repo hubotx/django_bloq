@@ -1,12 +1,14 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
 
 # Create your models here.
 class PublishedManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(status='published')
+        return super(PublishedManager, self)\
+            .get_queryset().filter(status='published')
 
 
 class Post(models.Model):
@@ -28,10 +30,18 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     published_at = models.DateTimeField(default=timezone.now)
 
+    objects = models.Manager()
     published = PublishedManager()
 
     class Meta:
         ordering = ('-published_at',)
+
+    def get_absolute_url(self):
+        return reverse('blog:post_detail',
+                       args=[self.published_at.year,
+                             self.published_at.strftime('%m'),
+                             self.published_at.strftime('%d'),
+                             self.slug])
 
     def __str__(self):
         return self.title
