@@ -1,0 +1,11 @@
+{% extends "blog/base.html" %}
+{% block content %}
+    {% for post in posts %}
+        <h3>{{ post.title }}</h3>
+        <p>Published at {{ post.published_at }} by {{ post.author }}.</p>
+        <hr />
+        {{ post.body|linebreaks }}
+    {% empty %}
+        <h3>There's nothing posts!</h3>
+    {% endfor %}
+{% endblock %}
